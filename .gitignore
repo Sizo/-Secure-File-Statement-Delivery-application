@@ -1,0 +1,18 @@
+.gradle/
+build/
+.idea/
+*.iml
+.terraform/
+*.tfstate
+*.tfstate.backup
+localstack-data/
+*.jar
+*.war
+!gradle/wrapper/gradle-wrapper.jar
+
+# LLM artifacts
+implementation_plan.md
+task.md
+walkthrough.md
+.agents/
+scripts/

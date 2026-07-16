@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: statement-worker
+  threads:
+    virtual:
+      enabled: true
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  datasource:
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+      idle-timeout: 30000
+      max-lifetime: 900000
+      keepalive-time: 30000
+      connection-timeout: 3000
+      leak-detection-threshold: 20000
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+app:
+  aws:
+    region: us-east-1
+    s3:
+      bucket: customer-statements
+  sqs:
+    queue-name: statement-ingestion-queue
+
+logging:
+  level:
+    com.capitec: DEBUG
+    io.awspring: DEBUG

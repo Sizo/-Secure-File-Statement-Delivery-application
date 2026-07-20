@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: Statement Delivery API
+  description: REST API for Capitec Bank Statement Delivery project
+  version: 1.0.0
+servers:
+  - url: /
+paths:
+  /api/v1/statements:
+    get:
+      summary: Retrieve a list of statements
+      operationId: getStatements
+      tags:
+        - Statements
+      responses:
+        '200':
+          description: A list of statements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StatementResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/v1/statements/{statementId}/download:
+    get:
+      summary: Get a download URL for a specific statement
+      operationId: getStatementDownloadUrl
+      tags:
+        - Statements
+      parameters:
+        - name: statementId
+          in: path
+          required: true
+          description: The UUID of the statement to download
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Download URL for the statement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DownloadUrlResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    StatementResponse:
+      type: object
+      description: Response object representing a bank statement
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+        statementDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+          
+    DownloadUrlResponse:
+      type: object
+      description: Response object containing the statement download URL
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+
+    ProblemDetail:
+      type: object
+      description: RFC 7807 Problem Detail format
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+
+  responses:
+    Unauthorized:
+      description: Unauthorized Access
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    Forbidden:
+      description: Forbidden Access
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'

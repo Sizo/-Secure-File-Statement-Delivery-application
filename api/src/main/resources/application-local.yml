@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/statement_db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+  flyway:
+    enabled: true
+
+app:
+  aws:
+    s3:
+      endpoint: http://localhost:4566

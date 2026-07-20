@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: statement-api
+  mvc:
+    problemdetails:
+      enabled: true
+  threads:
+    virtual:
+      enabled: true
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 3000
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+
+app:
+  aws:
+    region: us-east-1
+    s3:
+      bucket: customer-statements
+      presign-duration-minutes: 15
+  jwt:
+    secret: capitec-dev-secret-key-minimum-256-bits-long-for-hmac-sha256-algorithm
+
+logging:
+  level:
+    com.capitec: DEBUG
+    org.springframework.web: INFO

@@ -45,23 +45,29 @@ graph TD
 - Terraform 1.7+
 - AWS CLI configured
 
-## Quick Start (Local Development)
+## Quick Start (Docker / docker-compose)
 
-1. **Start dependencies using Podman**:
+The entire application stack (PostgreSQL, LocalStack S3/SQS, API, and Worker) can be spun up completely via Docker.
+
+1. **Start the complete stack**:
    ```bash
-   podman-compose up -d
+   docker-compose up --build -d
    ```
-   *This starts LocalStack (SQS, S3) and PostgreSQL.*
+   *This builds the API and Worker modules from source in a multi-stage Dockerfile, starts PostgreSQL, starts LocalStack, initializes the S3 bucket/SQS queues via an init script, and launches both Spring Boot apps connected via a dedicated docker network.*
 
-2. **Run database migrations**:
+2. **Verify services are running**:
    ```bash
-   ./gradlew flywayMigrate
+   docker-compose ps
    ```
+   - API will be accessible at `http://localhost:8080`
+   - Worker will be running in the background.
+   - LocalStack running on port `4566`.
+   - PostgreSQL running on port `5432`.
 
-3. **Start the applications**:
+3. **View logs**:
    ```bash
-   ./gradlew :api:bootRun
-   ./gradlew :worker:bootRun
+   docker-compose logs -f api
+   docker-compose logs -f worker
    ```
 
 ## API Documentation
@@ -101,9 +107,8 @@ Generates a short-lived presigned URL for secure download directly from S3.
 
 ## Testing Guide
 
-The project enforces a strict 85% JaCoCo line coverage requirement.
-- **Unit Tests:** Run with `./gradlew test`
-- **Integration Tests:** Run with `./gradlew integrationTest` (uses Testcontainers)
+The project enforces a strict 75% JaCoCo line coverage requirement.
+- **Unit & Integration Tests:** Run with `./gradlew test` (uses Testcontainers)
 - **Coverage Report:** Generated at `build/reports/jacoco/test/html/index.html`
 
 ## cURL Examples

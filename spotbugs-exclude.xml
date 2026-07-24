@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Exclude all generated code -->
+    <Match>
+        <Class name="~com\.capitec\.statement\.api\.generated\..*"/>
+    </Match>
+    
+    <!-- Exclude noisy rules for POC -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,CT_CONSTRUCTOR_THROW" />
+    </Match>
+</FindBugsFilter>

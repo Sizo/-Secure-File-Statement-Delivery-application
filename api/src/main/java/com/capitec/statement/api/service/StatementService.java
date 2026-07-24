@@ -26,7 +26,7 @@ public class StatementService {
     }
 
     public List<Statement> getStatementsForCustomer(String customerId) {
-        return statementRepository.findByCustomerIdOrderByStatementYearDescStatementMonthDesc(customerId);
+        return statementRepository.findByCustomerIdOrderByCreatedAtDesc(customerId);
     }
 
     public String getStatementForDownload(UUID statementId, String customerId, String ipAddress, String userAgent) {
@@ -41,7 +41,7 @@ public class StatementService {
             throw new AccessDeniedException("You do not have permission to access this statement");
         }
 
-        String downloadUrl = s3StorageService.generatePresignedUrl(statement.getS3ObjectKey());
+        String downloadUrl = s3StorageService.generatePresignedUrl(statement.getS3Key());
         
         auditService.logDownloadAttempt(statementId, customerId, ipAddress, userAgent, AuditStatus.SUCCESS, null);
         

@@ -44,14 +44,14 @@ class StatementServiceTest {
     void setUp() {
         statementId = UUID.randomUUID();
         statement = new Statement();
-        statement.setId(statementId);
+        statement.setStatementId(statementId);
         statement.setCustomerId("cust-123");
-        statement.setS3ObjectKey("statements/cust-123/stmt.pdf");
+        statement.setS3Key("statements/cust-123/stmt.pdf");
     }
 
     @Test
     void getStatementsForCustomer_ReturnsList() {
-        when(statementRepository.findByCustomerIdOrderByStatementYearDescStatementMonthDesc("cust-123"))
+        when(statementRepository.findByCustomerIdOrderByCreatedAtDesc("cust-123"))
                 .thenReturn(List.of(statement));
                 
         List<Statement> result = statementService.getStatementsForCustomer("cust-123");
@@ -63,7 +63,7 @@ class StatementServiceTest {
     @Test
     void getStatementForDownload_ValidOwnership_ReturnsUrl() {
         when(statementRepository.findById(statementId)).thenReturn(Optional.of(statement));
-        when(s3StorageService.generatePresignedUrl(statement.getS3ObjectKey())).thenReturn("https://s3.url");
+        when(s3StorageService.generatePresignedUrl(statement.getS3Key())).thenReturn("https://s3.url");
         
         String url = statementService.getStatementForDownload(statementId, "cust-123", "127.0.0.1", "curl");
         

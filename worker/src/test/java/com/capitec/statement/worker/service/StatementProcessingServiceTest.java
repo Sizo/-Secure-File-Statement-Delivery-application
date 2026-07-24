@@ -35,7 +35,7 @@ class StatementProcessingServiceTest {
 
     @BeforeEach
     void setUp() {
-        message = new StatementBatchMessage("cust-1", "acc-1", "2023-01");
+        message = new StatementBatchMessage("cust-1", "acc-1", "2023-01", new byte[]{1, 2, 3});
     }
 
     @Test

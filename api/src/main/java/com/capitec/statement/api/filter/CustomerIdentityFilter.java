@@ -61,7 +61,7 @@ public class CustomerIdentityFilter implements Filter {
             try {
                 return jwtUtil.validateAndExtractCustomerId(token);
             } catch (Exception e) {
-                throw new CustomerIdentityException("Invalid JWT token: " + e.getMessage());
+                throw new CustomerIdentityException("Invalid JWT token: " + e.getMessage(), e);
             }
         }
 

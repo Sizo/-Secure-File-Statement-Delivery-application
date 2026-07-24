@@ -29,7 +29,7 @@ class StatementBatchListenerTest {
 
     @BeforeEach
     void setUp() {
-        message = new StatementBatchMessage("cust-123", "acc-456", "2023-01");
+        message = new StatementBatchMessage("cust-123", "acc-456", "2023-01", new byte[]{1, 2, 3});
     }
 
     @Test

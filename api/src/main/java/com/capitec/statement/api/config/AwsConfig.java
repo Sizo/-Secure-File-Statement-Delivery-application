@@ -49,7 +49,7 @@ public class AwsConfig {
         if (environment.acceptsProfiles(Profiles.of("local"))) {
             builder.endpointOverride(URI.create(s3.getEndpoint()))
                    .forcePathStyle(true)
-                   .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")));
+                   .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("local-test", "local-test")));
         } else {
             builder.credentialsProvider(DefaultCredentialsProvider.create());
         }
@@ -63,7 +63,7 @@ public class AwsConfig {
         
         if (environment.acceptsProfiles(Profiles.of("local"))) {
             builder.endpointOverride(URI.create(s3.getEndpoint()))
-                   .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")));
+                   .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("local-test-presigner", "local-test-presigner")));
         } else {
             builder.credentialsProvider(DefaultCredentialsProvider.create());
         }

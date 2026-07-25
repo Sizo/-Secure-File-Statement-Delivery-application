@@ -1,0 +1,39 @@
+# syntax=docker/dockerfile:1
+FROM eclipse-temurin:21-jdk-alpine AS builder
+
+WORKDIR /workspace
+
+# Copy gradle files
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
+COPY gradle.properties .
+COPY spotbugs-exclude.xml .
+
+# Copy project modules
+COPY domain domain
+COPY api api
+COPY worker worker
+
+# Make gradlew executable
+RUN chmod +x ./gradlew
+
+# Build the worker module
+RUN ./gradlew :worker:bootJar -x test -x check --no-daemon
+
+# Final lightweight image
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+# Create a non-root user for security
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser:appgroup
+
+# Copy the built jar from the builder stage
+COPY --from=builder /workspace/worker/build/libs/worker-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8081
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -9,12 +9,12 @@ import com.capitec.statement.domain.entity.Statement;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,16 +31,16 @@ class StatementControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private StatementService statementService;
 
     @Test
     void getStatements_Returns200_WithStatements() throws Exception {
         Statement stmt = new Statement();
-        stmt.setId(UUID.randomUUID());
-        stmt.setStatementMonth(7);
-        stmt.setStatementYear(2026);
-        stmt.setCreatedAt(LocalDateTime.now());
+        stmt.setStatementId(UUID.randomUUID());
+        stmt.setStatementPeriod("2026-07");
+        stmt.setAccountNumber("1234567890");
+        stmt.setCreatedAt(OffsetDateTime.now());
         
         when(statementService.getStatementsForCustomer("cust-123"))
                 .thenReturn(List.of(stmt));
@@ -48,9 +48,9 @@ class StatementControllerTest {
         mockMvc.perform(get("/api/v1/statements")
                 .header("X-Customer-ID", "cust-123"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(stmt.getId().toString()))
-                .andExpect(jsonPath("$[0].month").value(7))
-                .andExpect(jsonPath("$[0].year").value(2026));
+                .andExpect(jsonPath("$[0].id").value(stmt.getStatementId().toString()))
+                .andExpect(jsonPath("$[0].statementDate").value("2026-07-01"))
+                .andExpect(jsonPath("$[0].accountId").value("1234567890"));
     }
 
     @Test
